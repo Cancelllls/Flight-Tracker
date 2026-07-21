@@ -96,7 +96,7 @@ function App() {
                 <circle cx="75" cy="65" r="8" fill="#3b82f6"></circle>
               </svg>
               <h1 className="text-2xl font-black text-white tracking-tight">
-                C.<span className="font-light text-gray-400 text-lg ml-1">Flight View</span>
+                Flight View
               </h1>
             </div>
             <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest ${connected ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
@@ -236,10 +236,10 @@ function App() {
         {selectedFlight && (
           <div className="absolute top-6 right-6 z-20 w-80 bg-[#111]/90 backdrop-blur-2xl border border-blue-500/30 p-1 rounded-3xl shadow-2xl shadow-blue-500/20 animate-in fade-in slide-in-from-right-4 duration-300">
              <div className="bg-[#0a0a0a]/50 rounded-2xl p-5">
-               <div className="flex items-start justify-between mb-6">
+               <div className="flex items-start justify-between mb-4">
                  <div>
                    <div className="flex items-center gap-2 mb-1">
-                     <Plane size={16} className="text-blue-500" />
+                     <Plane size={16} className={["7700", "7600", "7500"].includes(selectedFlight.squawk) ? "text-red-500" : "text-blue-500"} />
                      <h2 className="text-2xl font-black font-mono tracking-tight text-white">{selectedFlight.callsign}</h2>
                    </div>
                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{selectedFlight.origin_country}</p>
@@ -251,6 +251,21 @@ function App() {
                    <X size={16} />
                  </button>
                </div>
+
+               {/* Emergency Banner */}
+               {["7700", "7600", "7500"].includes(selectedFlight.squawk) && (
+                 <div className="mb-4 bg-red-950/60 border border-red-500/50 rounded-xl p-3">
+                   <div className="flex items-center gap-2 mb-1">
+                     <AlertTriangle size={14} className="text-red-500 animate-pulse" />
+                     <span className="text-xs font-bold text-red-400 uppercase tracking-widest">Active Emergency</span>
+                   </div>
+                   <p className="text-[10px] text-red-200 leading-relaxed mt-1">
+                     {selectedFlight.squawk === "7700" && "Squawk 7700: General Emergency. Aircraft is in distress and requires immediate ATC priority."}
+                     {selectedFlight.squawk === "7600" && "Squawk 7600: Radio Failure. Aircraft has lost communication with Air Traffic Control."}
+                     {selectedFlight.squawk === "7500" && "Squawk 7500: Hijacking/Unlawful Interference. Aircraft is under duress."}
+                   </p>
+                 </div>
+               )}
 
                <div className="space-y-4">
                  <div className="bg-[#111] border border-[#222] rounded-2xl p-3 flex justify-between items-center">
@@ -269,12 +284,20 @@ function App() {
                    <span className="font-mono font-bold text-purple-100">{Math.round(selectedFlight.altitude)} m</span>
                  </div>
 
-                 <div className="bg-[#111] border border-[#222] rounded-2xl p-3 flex justify-between items-center">
-                   <div className="flex items-center gap-2">
-                     <Navigation size={14} className="text-blue-400" />
-                     <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Track</span>
+                 {/* Manifest Info (Radar Only) */}
+                 <div className="bg-[#111] border border-[#222] rounded-2xl p-3 space-y-2">
+                   <div className="flex justify-between items-center">
+                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Route</span>
+                     <span className="text-[10px] font-bold text-gray-600 bg-[#222] px-2 py-0.5 rounded">RADAR ONLY</span>
                    </div>
-                   <span className="font-mono font-bold text-blue-100">{Math.round(selectedFlight.true_track)}°</span>
+                   <div className="flex justify-between items-center">
+                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Takeoff</span>
+                     <span className="text-[10px] font-bold text-gray-600 bg-[#222] px-2 py-0.5 rounded">UNAVAILABLE</span>
+                   </div>
+                   <div className="flex justify-between items-center">
+                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">ETA</span>
+                     <span className="text-[10px] font-bold text-gray-600 bg-[#222] px-2 py-0.5 rounded">UNKNOWN</span>
+                   </div>
                  </div>
 
                  <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[#222]">
