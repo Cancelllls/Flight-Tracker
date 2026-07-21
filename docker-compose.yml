@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  rta-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+      - "9876"
+
+  rta-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80"
+    depends_on:
+      - rta-backend
+    labels:
+      - "traefik.enable=true"
+      # The domain is handled by Coolify dynamically when deploying via compose if configured via UI,
+      # but adding these labels ensures Traefik handles routing cleanly if we run it directly.
+      # Coolify usually auto-generates Traefik labels based on the project settings.
